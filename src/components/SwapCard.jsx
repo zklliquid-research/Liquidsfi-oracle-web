@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from "react";
-import { InfoCircle, Repeat, Setting4 } from "iconsax-react";
-import { Soroban } from "@stellar/stellar-sdk";
+import { InfoCircle, Repeat, Setting4, TickCircle } from "iconsax-react";
+import { Soroban, Horizon } from "@stellar/stellar-sdk";
+import { v4 as uuidv4 } from "uuid";
 
 import { ClipLoader } from "react-spinners";
 
@@ -46,18 +47,20 @@ import {
   getTxBuilder,
   server,
   submitTx,
-  transferPayout,
-  transferToEVM,
   xlmToStroop,
   STELLAR_SDK_SERVER_URL,
   anyInvokeMainnet,
   sendTransactionMainnet,
+  HORIZON_URL,
+  getTrustline,
+  changeTrustline,
 } from "../freighter-wallet/soroban";
 import {
   getNetwork,
   setAllowed,
   signTransaction,
   getAddress,
+  addToken,
 } from "@stellar/freighter-api";
 import { SidebarContext } from "../context/SidebarContext";
 import axios from "axios";
@@ -69,9 +72,16 @@ function SwapCard({
   setNetworkXLM,
   userKeyXLM,
 }) {
+  const [recheckTrustline, setRecheckTrustline] = useState(0);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const [allowance, setAllowance] = useState(0);
+  // const [needApproval, setNeedApproval] = useState(false);
+
+  const [hasTrust, setHasTrust] = useState(false);
 
   const { chain, address, isConnected } = useAccount();
 
@@ -97,7 +107,9 @@ function SwapCard({
 
   const isMobile = useMediaQuery("(max-width: 375px)");
 
-  const needApproval = parseFloat(curAllowance) < parseFloat(amount);
+  const needApproval = allowance < Number(totalDebitedAmount);
+
+  // console.log("need approval", needApproval);
 
   const {
     selectedSourceChain,
@@ -111,11 +123,70 @@ function SwapCard({
     allChains,
     setSelectedNetwork,
     freighterConnecting,
+    claimableCashback,
+    setClaimableCashback,
+    updateBalances,
+    setUpdateBalances,
   } = useContext(SidebarContext);
 
-  // console.log("total debit amount", totalDebitedAmount);
+  useEffect(() => {
+    async function fetchCashback() {
+      const body = {
+        pubKey: userPubKey,
+        fee: BASE_FEE,
+        networkPassphrase: selectedNetwork?.networkPassphrase,
+        contractId: bridgeContracts[1200],
+        operation: "get_claimable_cashback",
+        args: [
+          { type: "Address", value: userPubKey },
+          {
+            type: "Address",
+            value: "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
+          },
+        ],
+      };
 
-  // console.log("selected source chain", selectedSourceChain?.id);
+      const response = await axios.post(
+        `${STELLAR_SDK_SERVER_URL}/simulateTransaction`,
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const receivedCashback = JSON.parse(response?.data?.data, (key, value) =>
+        /^\d+$/.test(value) ? BigInt(value) : value
+      );
+
+      const cashback = Soroban.formatTokenAmount(
+        receivedCashback?.claimable_amount?.toString(),
+        7
+      );
+
+      setClaimableCashback(cashback);
+
+      // setBalance(() => amount);
+    }
+    if (userPubKey && selectedSourceChain?.id === 1200) {
+      fetchCashback();
+    }
+  }, [userPubKey, selectedSourceChain, updateBalances]);
+
+  useEffect(() => {
+    setHasTrust(false);
+    async function fetchHasTrust() {
+      const accountHasTrust = await getTrustline(
+        recipientAddr,
+        tokenAddress.USDC[1200]
+      );
+      // console.log("account has trust", accountHasTrust);
+
+      setHasTrust(accountHasTrust);
+    }
+    if (selectedDestinationChain?.id === 1200 && recipientAddr) fetchHasTrust();
+  }, [recipientAddr, selectedDestinationChain, recheckTrustline]);
 
   useEffect(() => {
     async function fetchAccount() {
@@ -169,7 +240,7 @@ function SwapCard({
     if (userPubKey && selectedSourceChain?.id === 1200) {
       fetchBalance();
     }
-  }, [userPubKey, selectedNetwork, selectedSourceChain]);
+  }, [userPubKey, selectedNetwork, selectedSourceChain, updateBalances]);
 
   useEffect(() => {
     async function fetchBridgeFeeXLM() {
@@ -339,37 +410,29 @@ function SwapCard({
     }
   };
 
-  async function handleDepositTokenXLM() {
-    const amount = Soroban.parseTokenAmount("1000", 7);
-
-    const txBuiderTransfer = await getTxBuilder(
-      "GBD7AM5MWWPJTIN2NBJKYLTB342P46QRO3Q7LDJXW3LJSZZSEKALSF76",
-      xlmToStroop(100).toString(),
-      server,
-      selectedNetwork?.networkPassphrase
-    );
-
-    const xdr = await depositToken({
-      poolContract: "CDKPP6KCCAPGFZNOWSAQQXHKCWXRXI33QGTVZG4MUURVAIPUSQLGZVJ5",
-      from: "GBD7AM5MWWPJTIN2NBJKYLTB342P46QRO3Q7LDJXW3LJSZZSEKALSF76",
-      token_address: "CCMJ4KRNRUUO3SA36RPVXLSP364CSTTFUHLM5U767UCXTAQIE4SBYAA5",
-      amount: amount,
-      memo: "deposit",
-      txBuilderAdmin: txBuiderTransfer,
-      server: server,
-    });
-
-    // console.log("deposit transaction", xdr);
-
-    const signature = await signTransaction(xdr, { network: "FUTURENET" });
-
-    const result = await submitTx(
-      signature,
-      selectedNetwork?.networkPassphrase,
-      server
-    );
-
-    // console.log("deposit confirmed", result);
+  async function handleChangeTrustline() {
+    setIsProcessing(true);
+    try {
+      await addToken({
+        contractId: tokenAddress.USDC[1200],
+        networkPassphrase: selectedNetwork?.networkPassphrase,
+      });
+      // console.log("this ran chang trust");
+      // if (selectedDestinationChain?.id === 1200) {
+      //   tx = await changeTrustline(
+      //     recipientAddr,
+      //     BASE_FEE,
+      //     selectedNetwork?.networkPassphrase,
+      //     tokenAddress.USDC[1200]
+      //   );
+      //   console.log("change trustline signature", tx);
+      // }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setRecheckTrustline(uuidv4());
+      setIsProcessing(false);
+    }
   }
 
   async function handleTransferFromXLM() {
@@ -411,7 +474,7 @@ function SwapCard({
       saveTransferData(trxData);
 
       setMessageId(res?.txHash);
-      console.log("transfer res", res);
+      // console.log("transfer res", res);
     } catch (e) {
       console.log(e);
     } finally {
@@ -419,8 +482,31 @@ function SwapCard({
     }
   }
 
-  // const spender = poolContracts[chain?.id];
-  const spender = "0x0310b89bbE853440266BdA3f3878F54497565601";
+  useEffect(() => {
+    async function fetchAllowance(addr) {
+      const tokenDecimal = await readContract(config, {
+        abi: erc20Abi,
+        address: tokenAddress.USDC[selectedSourceChain?.id],
+        functionName: "decimals",
+      });
+
+      const result = await readContract(config, {
+        abi: erc20Abi,
+        address: tokenAddress.USDC[selectedSourceChain?.id],
+        functionName: "allowance",
+        args: [addr, bridgeContracts[selectedSourceChain?.id]],
+        account: addr,
+      });
+
+      setAllowance(formatUnits(result, tokenDecimal));
+
+      // console.log("allowance", formatUnits(result, tokenDecimal));
+      // setBalance(() => formatUnits(result, tokenDecimal));
+    }
+    if (selectedSourceChain && address && selectedSourceChain?.id !== 1200) {
+      fetchAllowance(address);
+    }
+  }, [address, chain, selectedSourceChain, isTransfer, updateBalances]);
 
   useEffect(() => {
     async function fetchBalance(addr) {
@@ -444,81 +530,50 @@ function SwapCard({
     if (selectedSourceChain && address && selectedSourceChain?.id !== 1200) {
       fetchBalance(address);
     }
-  }, [address, chain, selectedSourceChain, isTransfer]);
+  }, [address, chain, selectedSourceChain, isTransfer, updateBalances]);
 
-  // useEffect(() => {
-  //   async function awaitTransactionConfirmation(hashIn) {
-  //     const confirmHash = await waitForTransactionReceipt(config, {
-  //       chainId: chain.id,
-  //       hash: trxHash,
-  //     });
-
-  //     // console.log("the block hash is", confirmHash);
-  //     const msgId =
-  //       confirmHash.logs.length > 5
-  //         ? confirmHash.logs.at(5).topics.at(1)
-  //         : confirmHash.logs.at(-1).topics.at(1);
-
-  //     setIsProcessing(() => false);
-  //     if (isTransfer) {
-  //       setMessageId(() => msgId);
-  //       setAmount(() => 0);
-  //       setSelectedId();
-  //       setRecipientAddr(() => address);
-  //       const trxData = {
-  //         // details: `${amount} ${switchToken.name}: ${chain.name} to ${
-  //         //   chains.find((chain) => chain.id === selectedId).name // Assuming each chain object has a name property
-  //         // }`,
-  //         amount: amount,
-  //         from: isXLM ? 2024 : chain.id,
-  //         to: selectedId,
-  //         name: switchToken.name,
-  //         id: msgId,
-  //         time: new Date().toLocaleDateString(),
-  //       };
-  //       // setTransferData(() => ({
-  //       //   details: `${amount} ${switchToken.name}: ${chain.name} to ${
-  //       //     chains.find((chain) => chain.id === selectedId).name // Assuming each chain object has a name property
-  //       //   }`,
-  //       //   id: confirmHash.logs.at(-1).topics.at(1), // Use the same value as for setting messageId
-  //       // }));
-
-  //       saveTransferData(trxData);
-  //     }
-
-  //     setIsTransfer(false);
-  //   }
-
-  //   if (trxHash !== "") {
-  //     awaitTransactionConfirmation(trxHash);
-  //   }
-  // }, [trxHash]);
+  // console.log("the amount", amount, typeof amount);
+  // console.log("the amount", totalDebitedAmount, typeof totalDebitedAmount);
 
   async function handleApprove() {
     setIsProcessing(() => true);
-    let ethQuantity = "";
-    if (selectedSourceChain?.id?.toString() === "4200") {
-      ethQuantity = parseUnits(amount, 6);
-    } else if (selectedSourceChain?.id?.toString() === "3200") {
-      ethQuantity = parseUnits(amount, 18);
+    try {
+      let ethQuantity = "";
+      if (selectedSourceChain?.id?.toString() === "1") {
+        ethQuantity = parseUnits(totalDebitedAmount?.toString(), 6);
+      } else if (selectedSourceChain?.id?.toString() === "56") {
+        ethQuantity = parseUnits(totalDebitedAmount?.toString(), 18);
+      }
+
+      const res = await writeContract(config, {
+        abi: erc20Abi,
+        address: tokenAddress.USDC[selectedSourceChain?.id],
+        functionName: "approve",
+        args: [bridgeContracts[selectedSourceChain?.id], ethQuantity],
+      });
+      // setTrxHash(() => res);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setUpdateBalances(uuidv4());
+      setIsProcessing(false);
     }
-    const res = await writeContract(config, {
-      abi: erc20Abi,
-      address: tokenAddress.USDC[selectedSourceChain?.id],
-      functionName: "approve",
-      args: [bridgeContracts[selectedSourceChain?.id], ethQuantity],
-    });
-    setTrxHash(() => res);
   }
 
   async function handleTransferTokens() {
-    if (selectedSourceChain?.id?.toString() === "1200") {
-      await handleTransferFromXLM();
-    } else {
-      await handleTransferToXLM();
+    try {
+      if (selectedSourceChain?.id?.toString() === "1200") {
+        await handleTransferFromXLM();
+      } else {
+        await handleTransferToXLM();
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setRecipientAddr("");
+      setSelectedDestinationChain(null);
+      setUpdateBalances(uuidv4());
     }
-    setRecipientAddr("");
-    setSelectedDestinationChain(null);
   }
 
   async function awaitTransactionConfirmation(hashIn) {
@@ -546,6 +601,8 @@ function SwapCard({
         ethQuantity = parseUnits(amount, 18);
       }
 
+      console.log("the amount is", ethQuantity);
+
       const tx = await writeContract(config, {
         abi: abi,
         address: bridgeContracts[selectedSourceChain?.id],
@@ -563,7 +620,7 @@ function SwapCard({
       const res = await awaitTransactionConfirmation(tx);
       setTrxHash(() => res);
 
-      console.log("response", res?.transactionHash);
+      // console.log("response", res?.transactionHash);
 
       const trxData = {
         amount: amount,
@@ -600,9 +657,6 @@ function SwapCard({
     setAmount(() => balance);
   }
 
-  // useEffect(() => {
-  //   localStorage.clear();
-  // }, []);
   return (
     <>
       <div className="p-4  bg-[#04131F]  md:p-6 rounded-xl ">
@@ -726,26 +780,33 @@ function SwapCard({
                   name=""
                   id=""
                   placeholder="Paste recipient here"
-                  className="block w-full px-2 h-[45px] text-sm font-normal text-black placeholder-gray-800 bg-gray-300 border  rounded-sm focus:border-black focus:ring-1 focus:ring-black font-pj focus:outline-none"
+                  className={`block w-full text-black px-2 h-[45px] text-[12.5px] font-normal  placeholder-gray-800 bg-gray-300 border  rounded-sm  ${
+                    !hasTrust &&
+                    selectedDestinationChain?.id === 1200 &&
+                    "text-red-600"
+                  }`}
                   value={recipientAddr}
                 />
 
-                <div
-                  className="mt-0 absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer "
-                  onClick={handlePaste}
-                >
-                  <svg
-                    className="h-6 w-auto "
-                    viewBox="0 0 48 48"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M40 22V10C40 7.794 38.206 6 36 6H30C30 5.46957 29.7893 4.96086 29.4142 4.58579C29.0391 4.21071 28.5304 4 28 4H16C15.4696 4 14.9609 4.21071 14.5858 4.58579C14.2107 4.96086 14 5.46957 14 6H8C5.794 6 4 7.794 4 10V36C4 38.206 5.794 40 8 40H22C22 42.206 23.794 44 26 44H40C42.206 44 44 42.206 44 40V26C44 23.794 42.206 22 40 22ZM22 26V36H8V10H14V14H30V10H36V22H26C23.794 22 22 23.794 22 26ZM26 40V26H40L40.002 40H26Z"
-                      fill="black"
-                    />
-                  </svg>
-                </div>
+                {selectedDestinationChain?.id === 1200 &&
+                  (hasTrust ? (
+                    <div className="mt-0 absolute inset-y-0 right-0 flex items-center pr-2 ">
+                      <TickCircle
+                        variant="Bold"
+                        className="text-green-700 h-6 w-6"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="mt-0 absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer "
+                      onClick={handlePaste}
+                    >
+                      <InfoCircle
+                        variant="Bold"
+                        className="text-red-600 h-6 w-6"
+                      />
+                    </div>
+                  ))}
               </div>
 
               <div className="flex relative mt-4 font-semibold justify-between items-center w-full ">
@@ -775,7 +836,16 @@ function SwapCard({
         )}
 
         <div className="mt-6">
-          {(isConnected && !isXLM) || (userPubKey && isXLM) ? (
+          {!hasTrust && selectedDestinationChain?.id === 1200 ? (
+            <Button
+              disabled={
+                !amount || !selectedDestinationChain || !selectedSourceChain
+              }
+              onClick={handleChangeTrustline}
+            >
+              Connect and Change Trustline
+            </Button>
+          ) : isConnected || userPubKey ? (
             isProcessing ? (
               <Button>
                 <>
@@ -788,8 +858,8 @@ function SwapCard({
                   <span className="ml-2">Processing...</span>
                 </>
               </Button>
-            ) : needApproval && !isXLM ? (
-              <Button disabled={!amount || !selectedId} onClick={handleApprove}>
+            ) : needApproval && selectedSourceChain?.id !== 1200 ? (
+              <Button disabled={!amount} onClick={handleApprove}>
                 Approve
               </Button>
             ) : (
@@ -797,14 +867,6 @@ function SwapCard({
                 disabled={
                   !amount || !selectedDestinationChain || !selectedSourceChain
                 }
-                // onClick={
-                //   isXLM
-                //     ? handleTransferXLM
-                //     : selectedId === 2024
-                //     ? handleTransferToXLM
-                //     : handleTransfer
-                // }
-
                 onClick={handleTransferTokens}
               >
                 Transfer Now

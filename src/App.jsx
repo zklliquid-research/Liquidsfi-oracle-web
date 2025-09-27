@@ -29,7 +29,7 @@ const router = createBrowserRouter(
 				<Route path="/transfers">
 					<Route path=":transferId" element={<TransferDetails />} />
 				</Route>
-				<Route path="/explore">
+				<Route path="/explorer">
 					<Route path=":transferId" element={<TransactionDetails />} />
 				</Route>
 				<Route path="/liquidity">

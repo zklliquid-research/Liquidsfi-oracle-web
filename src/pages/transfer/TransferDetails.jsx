@@ -4,11 +4,11 @@ import Progress from "../../components/Progress";
 import BreadCrumb from "../../components/BreadCrumb";
 import { useParams } from "react-router";
 
-export default function TransactionDetails() {
+export default function TransferDetails() {
 	const { transferId } = useParams();
 
 	return (
-		<div className="mx-auto max-w-5xl text-sm">
+		<div className="mx-auto text-sm">
 			<BreadCrumb id={transferId} />
 
 			<Progress />

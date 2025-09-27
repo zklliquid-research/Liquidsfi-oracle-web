@@ -6,24 +6,17 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 
-import Dashboard from "./pages/defi/Dashboard";
 import DashboardLayout from "./layouts/DashboardLayout.jsx";
 
 import ErrorPage from "./layouts/Error.jsx";
 import Home from "./pages/Home.jsx";
-import Lend from "./pages/defi/Lend";
-import MyLoans from "./pages/defi/MyLoans";
-import Gamefi from "./pages/gamefi/Gamefi";
-import NFT from "./pages/nft/NFT";
 
 import Trade from "./pages/swap/Trade";
 import Bridge from "./pages/swap/Bridge";
-// import Liquidity from "./pages/liquidity/Liquidity";
 import Liquidity from "./pages/add-liquidity/Liquidity";
-import BonusRewardTab from "./components/ui/deposit/BonusRewardTab";
-import DepositsTab from "./components/ui/deposit/DepositsTab";
 import { SidebarContextProvider } from "./context/SidebarContext";
-import TransactionDetails from "./pages/transfer/TransferDetails.jsx";
+import TransferDetails from "./pages/transfer/TransferDetails.jsx";
+import TransactionDetails from "./pages/transfer/TransactionDetails.jsx";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -34,6 +27,9 @@ const router = createBrowserRouter(
 				<Route index element={<Navigate to="/bridge" />} />
 				<Route path="/bridge" element={<Trade />} />
 				<Route path="/transfers">
+					<Route path=":transferId" element={<TransferDetails />} />
+				</Route>
+				<Route path="/explore">
 					<Route path=":transferId" element={<TransactionDetails />} />
 				</Route>
 				<Route path="/liquidity">

@@ -32,15 +32,15 @@ function TopTokensList({ onTokenSelect, transactionData }) {
 			</div>
 
 			<div className="py-1 font-Roboto max-h-[754px] bg-[#191A1F] rounded-xl pb-10">
-				{/* {isConnected ? ( */}
+				{isConnected ? (
 					<div className=" pt-[15px] text-[18px]">
 						<TransactionHistory transactionData={transactionData} />
 					</div>
-				{/* ) : ( */}
+				) : (
 					<div className="text-center pt-[52px] text-[18px] px-2">
 						Please connect your wallet to see your trade history.
 					</div>
-				{/* )} */}
+				)}
 			</div>
 		</div>
 	);

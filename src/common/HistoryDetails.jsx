@@ -44,7 +44,10 @@ function HistoryDetails({
 							className={`font-medium col-span-2 lg:hidden  ${textColor}`}
 						>
 							{(title === "Origin Transaction Hash" ||
-								title === "Destination Transaction Hash") &&
+								title === "Destination Transaction Hash" ||
+								title === "Sender" ||
+								title === "Origin Contract" ||
+								title === "Destination Contract") &&
 								shortenString(value)}
 						</a>
 						{iconPresent && (

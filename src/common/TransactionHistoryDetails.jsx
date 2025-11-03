@@ -4,6 +4,7 @@ import HistoryDetails from "./HistoryDetails";
 import Status from "./Status";
 
 function TransactionHistoryDetails({ transaction }) {
+	console.log({ transaction });
 	return (
 		<div className="text-sm overflow-scroll">
 			<div className="px-5">
@@ -23,14 +24,14 @@ function TransactionHistoryDetails({ transaction }) {
 					value={transaction.origin_tx_hash}
 					textColor="text-[#2DD4BF]"
 					iconPresent
-					link={transaction.origin_chain_info.origin_explorer}
+					link={transaction.origin_chain_info.origin_tx_explorer}
 				/>
 				<HistoryDetails
 					title="Destination Transaction Hash"
 					value={transaction.destination_tx_hash}
 					textColor="text-[#2DD4BF]"
 					iconPresent
-					link={transaction.dest_chain_info.dest_explorer}
+					link={transaction.dest_chain_info.dest_tx_explorer}
 				/>
 				<HistoryDetails
 					title="Transaction Data"
@@ -60,21 +61,31 @@ function TransactionHistoryDetails({ transaction }) {
 				)}
 
 				<HistoryDetails
-					title="Sender Contract"
-					value={transaction.sender}
+					title="Sender"
+					value={transaction.origin_chain_info.sender}
 					textColor="text-[#2DD4BF]"
 					iconPresent
+					link={transaction.origin_chain_info.sender_explorer}
+				/>
+
+				<HistoryDetails
+					title="Origin Contract"
+					value={transaction.origin_chain_info.origin_contract}
+					textColor="text-[#2DD4BF]"
+					iconPresent
+					link={transaction.origin_chain_info.origin_contract_explorer}
 				/>
 
 				<HistoryDetails
 					title="Destination Contract"
-					value={transaction.destination_contract}
+					value={transaction.dest_chain_info.destination_contract}
 					textColor="text-[#2DD4BF]"
 					iconPresent
+					link={transaction.dest_chain_info.destination_contract_explorer}
 				/>
 
 				<HistoryDetails
-					title="Transaction Attempt Count"
+					title="Transmission Attempt Count"
 					value={transaction.transmission_attempt_count}
 				/>
 

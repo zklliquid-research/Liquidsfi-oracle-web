@@ -12,7 +12,7 @@ function ToFrom({ transaction }) {
 				/>
 				<span className="text-[14px]">From</span>
 				<span className="text-[#2DD4BF] text-[14px]">
-					{shortenString(transaction.sender, 12)}
+					{shortenString(transaction.origin_chain_info.sender, 12)}
 				</span>
 			</div>
 			<div className="flex items-center gap-2">
@@ -23,7 +23,7 @@ function ToFrom({ transaction }) {
 				/>
 				<span className="text-[14px]">To</span>
 				<span className="text-[#2DD4BF] text-[14px]">
-					{shortenString(transaction.destination_contract, 12)}
+					{shortenString(transaction.dest_chain_info.destination_contract, 12)}
 				</span>
 			</div>
 		</div>

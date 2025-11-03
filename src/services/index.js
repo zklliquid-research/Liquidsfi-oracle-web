@@ -17,3 +17,11 @@ export const getSupportedChains = async () => {
 
 	return data;
 };
+
+export const getExplorerStat = async () => {
+	const { data } = await axios.get(
+		`${import.meta.env.VITE_BASE_URL}/get-oracle-stats`
+	);
+
+	return data;
+};

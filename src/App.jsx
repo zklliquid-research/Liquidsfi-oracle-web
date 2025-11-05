@@ -48,8 +48,8 @@ const explorerRouter = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Explorer /> }, // /
-      { path: "/msg/:id", element: <Explorer /> }, // /:id
-      <Route path="/supported-chains" element={<SupportedChain />} />,
+      { path: "msg/:id", element: <Explorer /> }, // /:id
+      <Route path="supported-chains" element={<SupportedChain />} />,
       { path: "*", element: <ErrorPage /> },
     ],
   },

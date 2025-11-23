@@ -8,7 +8,6 @@ import Trade from "./pages/swap/Trade";
 import Bridge from "./pages/swap/Bridge";
 import Liquidity from "./pages/add-liquidity/Liquidity";
 import { SidebarContextProvider } from "./context/SidebarContext";
-import TransferDetails from "./pages/transfer/TransferDetails.jsx";
 import Explorer from "./pages/swap/Explorer.jsx";
 import SupportedChain from "./pages/swap/SupportedChain.jsx";
 
@@ -48,7 +47,7 @@ const explorerRouter = createBrowserRouter([
 ]);
 
 export default function App() {
-	const router = !isBridge ? bridgeRouter : explorerRouter;
+	const router = isBridge ? bridgeRouter : explorerRouter;
 	return (
 		<SidebarContextProvider>
 			<RouterProvider router={router} />

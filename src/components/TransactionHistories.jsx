@@ -89,7 +89,6 @@ export default function TransactionHistories({ transactionData }) {
 																	const data = await getATransactionHistory(
 																		transaction.id
 																	);
-																	console.log({ data });
 																	setTransactionDataDetails(data[0]);
 																	setOpenTransaction(index);
 																	updateUrl(transaction);

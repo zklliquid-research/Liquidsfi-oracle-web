@@ -3,7 +3,7 @@ import { shortenString } from "@/utils";
 
 function ToFrom({ transaction }) {
 	return (
-		<div className="space-y-1 max-w-[170px]">
+		<div className="space-y-1 min-w-[200px]">
 			<div className="flex items-center gap-2">
 				<img
 					src={transaction.origin_chain_info.origin_icon}
@@ -12,7 +12,7 @@ function ToFrom({ transaction }) {
 				/>
 				<span className="text-[14px]">From</span>
 				<span className="text-[#2DD4BF] text-[14px]">
-					{shortenString(transaction.origin_chain_info.sender, 12)}
+					{shortenString(transaction.origin_chain_info.origin_contract, 12)}
 				</span>
 			</div>
 			<div className="flex items-center gap-2">

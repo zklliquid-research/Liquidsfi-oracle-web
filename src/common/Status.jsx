@@ -1,6 +1,6 @@
+/* eslint-disable react/prop-types */
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { RiErrorWarningFill } from "react-icons/ri";
-import { CgSandClock } from "react-icons/cg";
 import { capitalizeFirst } from "@/utils";
 
 function Status({ transaction }) {
@@ -10,12 +10,12 @@ function Status({ transaction }) {
 				transaction.final_status === "success"
 					? "bg-[#DDF8E6] text-[#1E633A]"
 					: transaction.final_status === "pending"
-					? "bg-yellow-500/20 text-yellow-400"
+					? "bg-[#FFF6EA] text-[#E28204]"
 					: "bg-[#FCE9E9] text-red-400"
 			} `}
 		>
 			{transaction.final_status === "pending" ? (
-				<CgSandClock className="text-[16px]" />
+				<RiErrorWarningFill className="text-[16px] text-[#E28204]" />
 			) : transaction.final_status === "success" ? (
 				<IoCheckmarkCircle className="text-[16px] text-[#2FB96C]" />
 			) : (

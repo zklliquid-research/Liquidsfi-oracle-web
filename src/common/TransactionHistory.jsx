@@ -70,10 +70,21 @@ function TransactionHistory() {
     };
   }, [openTransaction]);
 
+  const isVisible = query.length < 50;
   return (
     <div className="lg:col-span-4 space-y-4">
-      <div className="flex justify-between items-center gap-4 flex-wrap min-h-[50px]">
-        <h2 className="text-[20px] font-bold shrink-0">Latest Transactions</h2>
+      <div className="flex justify-between relative  items-center gap-4 flex-wrap min-h-[50px]">
+        {isVisible && (
+          <h2
+            className="text-[20px] font-bold shrink-0 opacity-0 translate-y-2 transition-all duration-500 ease-out"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transform: isVisible ? "translateY(0)" : "translateY(10px)",
+            }}
+          >
+            Latest Transactions
+          </h2>
+        )}
 
         <Search visible={true} query={query} setQuery={setQuery} />
       </div>
@@ -96,10 +107,22 @@ function TransactionHistory() {
                       return (
                         <>
                           <Popover.Button
+                            // onClick={() => {
+                            //   const next = isOpen ? null : i;
+                            //   setOpenTransaction(next);
+                            //   updateUrl(next ? null : transaction);
+                            // }}
+
                             onClick={() => {
-                              const next = isOpen ? null : i;
-                              setOpenTransaction(next);
-                              updateUrl(next ? null : transaction);
+                              if (isOpen) {
+                                // closing
+                                setOpenTransaction(null);
+                                updateUrl(null);
+                              } else {
+                                // opening
+                                setOpenTransaction(i);
+                                updateUrl(transaction);
+                              }
                             }}
                             className="w-full focus:outline-none"
                           >

@@ -30,7 +30,7 @@ const BonusRewardTab = () => {
 
               <div className="flex font-display items-center gap-6">
                 <h2 className="text-[#FFF] leading-[36px] text-[28px] font-bold my-2">
-                  $12,875
+                  $0.00
                 </h2>
                 <h4 className="flex items-center gap-1 text-[#34D399] leading-[16px] text-[12px] font-medium">
                   <ArrowIcon /> 2%
@@ -38,7 +38,7 @@ const BonusRewardTab = () => {
               </div>
 
               <h3 className="leading-[16px] text-[12px] font-medium font-display text-[#6D7A86] mb-8">
-                78% - 105%
+                5.30% - 10.55%
               </h3>
             </div>
 
@@ -73,7 +73,7 @@ const BonusRewardTab = () => {
 
                 <div className="flex font-display items-center gap-6">
                   <h2 className="text-[#FFF] leading-[36px] text-[28px] font-bold my-2">
-                    $12,875
+                    $0.00
                   </h2>
                   <h4 className="flex items-center gap-1 text-[#34D399] leading-[16px] text-[12px] font-medium">
                     <ArrowIcon /> 2%
@@ -81,7 +81,7 @@ const BonusRewardTab = () => {
                 </div>
 
                 <h3 className="leading-[16px] text-[12px] font-medium font-display text-[#6D7A86] mb-8">
-                  78% - 105%
+                  5.30% - 10.55%
                 </h3>
               </div>
 
@@ -116,21 +116,17 @@ const COINS = [
   {
     coinIcon: <XLMIcon className="h-5 w-auto" />,
     coin: "Total in XLM",
-    price: "16,011.82",
-  },
-  {
-    coinIcon: <BUSDIcon className="h-5 w-auto" />,
-    coin: "BUSD Bonus",
-    price: "5,238.47",
-  },
-  {
-    coinIcon: <USDTIcon className="h-5 w-auto" />,
-    coin: "USDT Bonus",
-    price: "6,532.02",
+    price: "0.00",
   },
   {
     coinIcon: <USDCIcon className="h-5 w-auto" />,
     coin: "USDC Bonus",
-    price: "4,672.42",
+    price: "0.00",
+  },
+
+  {
+    coinIcon: <USDTIcon className="h-5 w-auto" />,
+    coin: "USDT Bonus",
+    price: "0.00",
   },
 ];

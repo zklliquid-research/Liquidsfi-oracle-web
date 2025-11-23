@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 
 // import { MediaQueryBreakpointEnum } from "@/constant/constants";
@@ -12,37 +12,21 @@ import USDCIcon from "@/assets/svg/USDC.svg";
 
 import DepositWithdrawModal from "./DepositWithdrawModal";
 import { tokens } from "../../../contracts/contracts-details.json";
-import { SidebarContext } from "../../../context/SidebarContext";
+
+const tokenOptions = Object.entries(tokens).map(([symbol, data]) => ({
+  id: uuid(),
+  symbol,
+  apr: 1.3,
+  int: 12.343,
+  walletBal: 2130,
+  deposit: 1220,
+  ...data,
+}));
 
 const DepositsTab = () => {
-  const {
-    isOpenDeposit,
-    setIsOpenDeposit,
-    walletBalances,
-    setWalletBalances,
-    depositBalances,
-    selectedSourceChain,
-  } = useContext(SidebarContext);
-
-  const tokenOptions = Object.entries(tokens).map(([symbol, data]) => ({
-    id: uuid(),
-    symbol,
-    apr: 1.35,
-    int: 0.013,
-    walletBal:
-      (Number(walletBalances?.[data[selectedSourceChain?.id]]) || 0).toFixed(
-        3
-      ) ?? 0,
-    deposit:
-      (Number(depositBalances?.[data[selectedSourceChain?.id]]) || 0).toFixed(
-        3
-      ) ?? 0,
-    ...data,
-  }));
+  const [isOpenDeposit, setIsOpenDeposit] = useState(false);
 
   const islg = useMediaQuery(MediaQueryBreakpointEnum.lg);
-
-  const [action, setAction] = useState(null);
 
   return (
     <>
@@ -55,9 +39,9 @@ const DepositsTab = () => {
               </h3>
 
               <div className="flex items-center gap-8 text-[14px] leading-[20px] font-display font-medium text-[#9BA6B7]">
-                <h3>Total Deposits</h3>
-                <h3>Rebalance Amt</h3>
-                <h3>Rebalance Reward</h3>
+                <h3>Total earning</h3>
+                <h3>Total borrowed</h3>
+                <h3>Asset BP</h3>
                 <Icon />
               </div>
             </>
@@ -68,9 +52,9 @@ const DepositsTab = () => {
               </h3>
 
               <div className="flex items-center justify-between gap-6 mt-5 text-[14px] leading-[20px] font-display font-medium text-[#9BA6B7]">
-                <h3>Total Deposits</h3>
-                <h3>Rebalance Amt</h3>
-                <h3>Rebalance Reward</h3>
+                <h3>Total earning</h3>
+                <h3>Total borrowed</h3>
+                <h3>Asset BP</h3>
               </div>
             </div>
           )}
@@ -90,7 +74,7 @@ const DepositsTab = () => {
                       APY
                     </th>
                     <th scope="col" className="text-right pb-4">
-                      Deposit Amount
+                      USD value
                     </th>
                     <th scope="col" className="text-right pb-4">
                       In Wallet
@@ -132,28 +116,13 @@ const DepositsTab = () => {
                 <Button className="bg-[#292B33]">Compound</Button>
                 <Button className="bg-[#292B33]">Claim</Button>
 
-                <Button
-                  onClick={() => {
-                    setIsOpenDeposit(true);
-                    setAction("deposit");
-                  }}
-                >
-                  Deposit
-                </Button>
+                <Button onClick={() => setIsOpenDeposit(true)}>Deposit</Button>
                 <DepositWithdrawModal
                   isOpenDeposit={isOpenDeposit}
                   onClose={() => setIsOpenDeposit(false)}
-                  action={action}
                 />
 
-                <Button
-                  onClick={() => {
-                    setIsOpenDeposit(true);
-                    setAction("withdraw");
-                  }}
-                >
-                  Withdraw
-                </Button>
+                <Button>Withdraw</Button>
               </div>
             </div>
           </>
@@ -206,30 +175,15 @@ const DepositsTab = () => {
       {!islg && (
         <div className="pt-5 pb-12">
           <div className="flex items-center gap-4">
-            <Button
-              onClick={() => {
-                setIsOpenDeposit(true);
-                setAction("deposit");
-              }}
-              className="w-full"
-            >
+            <Button onClick={() => setIsOpenDeposit(true)} className="w-full">
               Deposit
             </Button>
             <DepositWithdrawModal
               isOpenDeposit={isOpenDeposit}
               onClose={() => setIsOpenDeposit(false)}
-              action={action}
             />
 
-            <Button
-              onClick={() => {
-                setIsOpenDeposit(true);
-                setAction("withdraw");
-              }}
-              className="w-full"
-            >
-              Withdraw
-            </Button>
+            <Button className="w-full">Withdraw</Button>
           </div>
           <div className="flex items-center gap-4 pt-4">
             <Button className="bg-[#292B33] w-full">Compound</Button>

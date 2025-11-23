@@ -78,42 +78,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint64",
-          "name": "_chainId",
-          "type": "uint64"
-        }
-      ],
-      "name": "addSupportedChain",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint64",
-          "name": "_destChainId",
-          "type": "uint64"
-        },
-        {
-          "internalType": "string",
-          "name": "_destToken",
-          "type": "string"
-        }
-      ],
-      "name": "addTokenDestinationMap",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "",
           "type": "address"
@@ -148,68 +112,6 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
-        }
-      ],
-      "name": "chainSupported",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
-        }
-      ],
-      "name": "destPools",
-      "outputs": [
-        {
-          "internalType": "bytes",
-          "name": "",
-          "type": "bytes"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
-        }
-      ],
-      "name": "destTokens",
-      "outputs": [
-        {
-          "internalType": "bytes",
-          "name": "",
-          "type": "bytes"
         }
       ],
       "stateMutability": "view",
@@ -318,19 +220,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "bytes",
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "onOracleData",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "oracle",
       "outputs": [
@@ -357,23 +246,10 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "originAmountReceived",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "uint64",
-          "name": "_destChainId",
+          "name": "_chainId",
           "type": "uint64"
         },
         {
@@ -398,13 +274,7 @@
         }
       ],
       "name": "outgoingTransfer",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
+      "outputs": [],
       "stateMutability": "payable",
       "type": "function"
     },
@@ -467,24 +337,6 @@
         }
       ],
       "name": "removeLiquidity",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint64",
-          "name": "_destChainId",
-          "type": "uint64"
-        },
-        {
-          "internalType": "string",
-          "name": "_destPool",
-          "type": "string"
-        }
-      ],
-      "name": "setDestChainPools",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -612,49 +464,28 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "withdrawLiquidityFees",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "stateMutability": "payable",
       "type": "receive"
     }
   ],
 
-  "tokens": {
+  "tokenAddress": {
     "USDC": {
-      "43113": "0x5425890298aed601595a70AB815c96711a31Bc65",
-      "11155111": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
-      "12000000": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
-      "network": "TESTNET"
+      "56": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      "1": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "1200": "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75"
     },
     "USDT": {
-      "43113": "0x6230B4Cc3B2c6D489D6477e4192465a99A761261",
-      "11155111": "0x6938cA11a946222A4EDe19454F3130aA545Ed3C0",
-      "12000000": "CDWTEYA3VPVDR3ON5NFWHX6EE4MIBN2SKB257NKXLV6CH3XXCMPJTTBX",
-      "network": "TESTNET"
+      "56": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      "1": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "1200": "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75"
     }
   },
-  "tokenOptions": ["USDC", "USDT"],
 
-  "pools": {
-    "43113": "0x3C8f0f0A359acb0541D3B946CADA16f8d40Ea90a",
-    "11155111": "0x1214d111a38C63Ac627144B0992C033aFf9D3cd2",
-    "12000000": "CDQTTGORCMO6FDWSOIWVU53ZRAQ5VEDJSTKZ6YLX7Z4XCCHICPH55H3Q"
+  "bridgeContracts": {
+    "56": "0x3C8f0f0A359acb0541D3B946CADA16f8d40Ea90a",
+    "1": "0x0310b89bbE853440266BdA3f3878F54497565601",
+    "1200": "CB32ILGARL45X7IW6ROE24VPHSVRHDDQQ7GC2L67LYGB4AGZ2LU3565Z"
   },
   "oracleContracts": {
     "56": "0x5aA85120e253d1a3752bD66Bf72B387d8C63B7D4",
@@ -662,45 +493,11 @@
     "1200": "CADFS4N6Q2JZSNYQ2QKNEFZGFD6NAD3ZXDNEXX7GTVT2KF7UWXNQWBOZ"
   },
 
-  "native": { "56": "BNB", "1": "ETH", "12000000": "XLM", "11155111": "ETH" },
+  "native": { "56": "BNB", "1": "ETH", "1200": "XLM" },
 
   "chainIds": {
-    "43113": 45000000,
-    "11155111": 35000000,
-    "12000000": 12000000
-  },
-  "txExplorerUrl": {
-    "43113": "https://testnet.snowtrace.io/tx",
-    "11155111": "https://sepolia.etherscan.io/tx",
-    "12000000": "https://stellar.expert/explorer/testnet/tx"
-  },
-
-  "chainType": {
-    "43113": "evm",
-    "11155111": "evm",
-    "12000000": "soroban"
-  },
-  "chainsArr": ["43113", "11155111", "12000000"],
-
-  "destinationNetwork": {},
-  "tokensDecimals": {
-    "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238": 6,
-    "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA": 7,
-    "0x6938cA11a946222A4EDe19454F3130aA545Ed3C0": 18,
-    "CDWTEYA3VPVDR3ON5NFWHX6EE4MIBN2SKB257NKXLV6CH3XXCMPJTTBX": 7
-  },
-
-  "protocolDecimals": {
-    "0xb260A989C91786b6d024Abf0D91E284B21d160c7": 6,
-    "CABCDIGERUZTZPLKKCYUEEOPFGLQNMB7GMG6LFLOLNPHBZW54CXXTPMP": 7,
-    "0xa18372470C96327FC3484CA63D2350D7C1C258c7": 18,
-    "CAPRXUNG5AXJ7L4BCSRNNTV6D7X37KUYSWBPZYEA443CJ2R574MJLXGP": 7
-  },
-  "protocolTokens": {
-    "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238": "0xb260A989C91786b6d024Abf0D91E284B21d160c7",
-    "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA": "CABCDIGERUZTZPLKKCYUEEOPFGLQNMB7GMG6LFLOLNPHBZW54CXXTPMP",
-    "0x6938cA11a946222A4EDe19454F3130aA545Ed3C0": "0xa18372470C96327FC3484CA63D2350D7C1C258c7",
-    "CDWTEYA3VPVDR3ON5NFWHX6EE4MIBN2SKB257NKXLV6CH3XXCMPJTTBX": "CAPRXUNG5AXJ7L4BCSRNNTV6D7X37KUYSWBPZYEA443CJ2R574MJLXGP"
-  },
-  "chainNetwork": { "12000000": "TESTNET" }
+    "56": 3200,
+    "1": 4200,
+    "1200": 1200
+  }
 }

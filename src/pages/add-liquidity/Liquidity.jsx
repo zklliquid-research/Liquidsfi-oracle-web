@@ -21,10 +21,10 @@ function Liquidity(props) {
 
   return (
     <>
-      <div className="absolute top-0 left-0 w-full h-screen opacity-40 bg-black z-10 text-white text-6xl flex  items-center justify-center">
+      {/* <div className="absolute top-0 left-0 w-full h-screen opacity-40 bg-black z-10 text-white text-6xl flex  items-center justify-center">
         {" "}
         In Development...
-      </div>
+      </div> */}
       <div className="relative z-0">
         <h3 className="text-[#FFFFFF] heading-primary">
           Add Liquidity (<span className="text-red-300">Testnet</span>)
@@ -63,19 +63,19 @@ function Liquidity(props) {
 
           <div>
             <h3 className="text-[28px] font-bold mt-4 md:mt-0">
-              EVMs/nonEVMs Bridge
+              Soroban - EVMs Bridge
             </h3>
             <p className="mt-2 text-dark-100">
-              Fast and secure stablecoin bridge, connecting liquidity on siloed
-              blockchains, both EVM and non-EVM. Bridge liquidity pools are
-              going live soon; provide liquidity and earn great yields.
+              Fast and secure stablecoin Soroban–EVM bridge, connecting
+              liquidity on siloed blockchains—Soroban to multiple EVM
+              blockchains. Provide liquidity and earn great yields.
               <a
                 className="bg-clip-text bg-gradient-to-r ml-2 text-transparent from-[#4DFFDF] to-[#4DA1FF]"
                 href="https://docs.ZKLiquid.io"
                 target="_blank"
                 rel="noreferrer"
               >
-                Learn more about ZKLiquid liquidity protocol
+                Learn more about LiquidsFi liquidity protocol
               </a>
             </p>
           </div>
@@ -84,7 +84,7 @@ function Liquidity(props) {
             <p className="mt-5 text-sm font-bold">
               Up to{" "}
               <span className="text-[#33ED8D] text-[34px] font-bold">
-                26 .0%
+                5.35%
               </span>
             </p>
           </div>

@@ -32,11 +32,11 @@ function Bridge() {
   }, [submitHash]);
   return (
     <div className="flex justify-center items-center">
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div className="bg-gray-200 px-6 py-2 rounded-lg shadow-lg">
           <SuccessModal onClose={handleCloseModal} hashUrl={hashUrl} />
         </div>
-      )}
+      )} */}
       <HeroMain
         setSubmitHash={setSubmitHash}
         isProcessing={isProcessing}

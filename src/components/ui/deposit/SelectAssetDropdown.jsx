@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { GoChevronDown } from "react-icons/go";
 
-const SelectAssetDropdown = ({ value, onChange, options, label }) => {
+const SelectAssetDropdown = ({
+  value,
+  onChange,
+  options,
+  label,
+  tokenOptions,
+  setSwitchToken,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(tokenOptions[0]);
   const divEl = useRef();
 
   useEffect(() => {
@@ -28,12 +36,18 @@ const SelectAssetDropdown = ({ value, onChange, options, label }) => {
   };
 
   const handleOptionClick = (option) => {
+    // let selectedOption = tokenOptions[0];
     setIsOpen(false);
     onChange(option);
-  };
 
-  const selectedOption =
-    options.find((option) => option.value === value) || options[0];
+    const selectedOption = tokenOptions?.find(
+      (item) => item?.id === option?.id
+    );
+
+    setSwitchToken(selectedOption);
+
+    setSelectedOption(selectedOption);
+  };
 
   return (
     <>
@@ -46,8 +60,12 @@ const SelectAssetDropdown = ({ value, onChange, options, label }) => {
           onClick={handleClick}
         >
           <div className="flex items-center gap-2 font-display text-[15.5px] leading-[20px] font-medium text-[#6D7A86]">
-            {selectedOption.icon}
-            {selectedOption.label}
+            <img
+              className="w-6 h-auto"
+              src={`/cryptoIcons/${selectedOption.symbol}.svg`}
+              alt=""
+            />
+            {selectedOption.symbol}
           </div>
           <GoChevronDown
             className={`transition-transform duration-300 ${
@@ -61,14 +79,18 @@ const SelectAssetDropdown = ({ value, onChange, options, label }) => {
           }`}
           style={{ transformOrigin: "top" }}
         >
-          {options.map((option) => (
+          {tokenOptions.map((option) => (
             <div
               className="hover:bg-dark-400 rounded cursor-pointer p-1 flex items-center gap-2 font-display"
               onClick={() => handleOptionClick(option)}
-              key={option.value}
+              key={option.id}
             >
-              {option.icon}
-              {option.label}
+              <img
+                className="w-6 h-auto"
+                src={`/cryptoIcons/${option.symbol}.svg`}
+                alt=""
+              />
+              {option.symbol}
             </div>
           ))}
         </div>

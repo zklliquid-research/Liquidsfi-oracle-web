@@ -142,19 +142,19 @@ function Liquidity() {
 
           <div>
             <h3 className="text-[28px] font-bold mt-4 md:mt-0">
-              EVMs - Soroban Bridge
+              Soroban - EVMs Bridge
             </h3>
             <p className="mt-2 text-dark-100">
-              Fast and secured stable coins bridge, connecting liquidity from
-              EVM chains to Soroban. Participate by providing bridge liquidity
-              and earn great yield.
+              Fast and secure stablecoin Soroban–EVM bridge, connecting
+              liquidity on siloed blockchains—Soroban to multiple EVM
+              blockchains. Provide liquidity and earn great yields.
               <a
                 className="bg-clip-text bg-gradient-to-r ml-2 text-transparent from-[#4DFFDF] to-[#4DA1FF]"
                 href="https://docs.ZKLiquid.io"
                 target="_blank"
                 rel="noreferrer"
               >
-                Learn more about ZKLiquid liquidity protocol
+                Learn more about LiquidsFi liquidity protocol
               </a>
             </p>
           </div>
@@ -163,7 +163,7 @@ function Liquidity() {
             <p className="mt-5 text-sm font-bold">
               Up to{" "}
               <span className="text-[#33ED8D] text-[34px] font-bold">
-                26 .0%
+                5.35%
               </span>
             </p>
           </div>

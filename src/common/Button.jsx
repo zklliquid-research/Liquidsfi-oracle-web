@@ -12,6 +12,7 @@ const Button = ({
   fontSize = "text-[14px]",
   leading = "leading-[20px]",
   font = "font-display font-bold",
+  processMessage = "",
   ...rest
 }) => {
   return (
@@ -30,7 +31,7 @@ const Button = ({
       )}
       {...rest}
     >
-      {children}
+      {processMessage || children}
     </button>
   );
 };

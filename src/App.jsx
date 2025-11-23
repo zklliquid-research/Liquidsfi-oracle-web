@@ -56,7 +56,7 @@ const explorerRouter = createBrowserRouter([
 ]);
 
 export default function App() {
-  const router = isBridge ? bridgeRouter : explorerRouter;
+  const router = !isBridge ? bridgeRouter : explorerRouter;
   return (
     <SidebarContextProvider>
       <RouterProvider router={router} />

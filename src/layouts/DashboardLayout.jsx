@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import sidebarLinks from "../constant/sidebarLinks.jsx";
 import { SidebarContext } from "../context/SidebarContext";
 import { WagmiContext } from "../context/WagmiContext";
+import SuccessModal from "../components/SuccessModal";
 
 function DashboardLayout() {
   const location = useLocation();
@@ -39,6 +40,8 @@ function DashboardLayout() {
 
   return (
     <div className="flex bg-black min-h-app ">
+      <SuccessModal />
+      {/* <SuccessModal onClose={handleCloseModal} hashUrl={hashUrl} /> */}
       <Sidebar currentPageLinks={sidebarLinks} />
       <Header />
 

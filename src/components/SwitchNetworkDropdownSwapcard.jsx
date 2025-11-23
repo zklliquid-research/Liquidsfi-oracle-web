@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useContext } from "react";
+
 import { Menu, Transition } from "@headlessui/react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { ArrowDown2 } from "iconsax-react";
 import { toast } from "react-toastify";
-import { config } from "../Wagmi";
+
 import { avalancheFuji, sepolia } from "viem/chains";
 import { SidebarContext } from "../context/SidebarContext";
 

@@ -5,18 +5,25 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { ArrowDown2 } from "iconsax-react";
 import { toast } from "react-toastify";
-import { config } from "../Wagmi";
-import { avalancheFuji, sepolia } from "viem/chains";
+import { v4 as uuid } from "uuid";
+
 import { tokensSelector } from "../contracts/destination-selector";
+
 import { isConnected } from "@stellar/freighter-api";
 
-function SwitchSourceToken({ width, switchToken, setSwitchToken }) {
+function SwitchSourceToken({
+  width,
+  switchToken,
+  setSwitchToken,
+  tokenOptions,
+}) {
   const { chain } = useAccount();
   const { chains, error, isLoading, pendingChainId, switchChain } =
     useSwitchChain();
 
-  async function handleSwitchToken(index) {
-    setSwitchToken(() => tokensSelector[index]);
+  async function handleSwitchToken(id) {
+    const selected = tokenOptions?.find((x) => x.id === id);
+    setSwitchToken(() => selected);
   }
 
   useEffect(() => {
@@ -46,11 +53,11 @@ function SwitchSourceToken({ width, switchToken, setSwitchToken }) {
               <div className="bg-[#101115] p-1 rounded-full">
                 <img
                   className="w-6 h-6"
-                  src={`/cryptoIcons/${switchToken.name}.svg`}
+                  src={`/cryptoIcons/${switchToken?.symbol}.svg`}
                   alt=""
                 />
               </div>
-              <span className="lg:hidden xl:inline">{switchToken.name}</span>
+              <span className="lg:hidden xl:inline">{switchToken?.symbol}</span>
             </>
 
             <ArrowDown2
@@ -72,24 +79,26 @@ function SwitchSourceToken({ width, switchToken, setSwitchToken }) {
             leaveTo="transform scale-95 opacity-0"
           >
             <Menu.Items className="absolute right-0 z-10 w-[160px] py-1 mt-2 origin-top-right border rounded-md shadow-lg bg-dark-400 border-dark-300 ring-1 ring-black ring-opacity-5 focus:outline-none">
-              {tokensSelector.map((x, index) => (
-                <Menu.Item key={x.name}>
+              {tokenOptions?.map((option) => (
+                <Menu.Item key={option.symbol}>
                   <button
-                    onClick={() => handleSwitchToken(index)}
+                    onClick={() => {
+                      handleSwitchToken(option.id);
+                    }}
                     // onClick={() => switchChain({ chainId: x.id })}
                     className={clsx(
-                      "px-4 py-2 text-sm transition-colors flex items-center gap-2 w-full text-left hover:bg-dark-300 ",
-                      index === 1 && "cursor-not-allowed"
+                      "px-4 py-2 text-sm transition-colors flex items-center gap-2 w-full text-left hover:bg-dark-300 "
                     )}
-                    disabled={index === 1}
                   >
                     <img
                       className="w-6 h-6"
-                      src={`/cryptoIcons/${x.name}.svg`}
+                      src={`/cryptoIcons/${option.symbol}.svg`}
                       alt=""
                     />
-                    {x.name}
-                    {isLoading && pendingChainId === x.id && " (switching)"}
+                    {option.symbol}
+                    {isLoading &&
+                      pendingChainId === option.symbol &&
+                      " (switching)"}
                   </button>
                 </Menu.Item>
               ))}

@@ -6,7 +6,7 @@ import {
   anyInvokeMainnet,
   sendTransactionMainnet,
 } from "../../../freighter-wallet/soroban";
-import { bridgeContracts } from "../../../contracts/contracts-details.json";
+import { pools } from "../../../contracts/contracts-details.json";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Cashback() {
@@ -37,7 +37,7 @@ export default function Cashback() {
         userPubKey,
         BASE_FEE,
         selectedNetwork?.networkPassphrase,
-        bridgeContracts[1200],
+        pools[12000000],
         "claim_cashback",
         args,
         "claim cashback"

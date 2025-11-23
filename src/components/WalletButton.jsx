@@ -24,6 +24,7 @@ function WalletButton({ width }) {
     setSelectedSouceChain,
     selectedNetwork,
     setSelectedNetwork,
+    userKey,
   } = useContext(SidebarContext);
 
   const copyAddress = () => {
@@ -31,7 +32,10 @@ function WalletButton({ width }) {
     toast.success("Copied to clipboard.");
   };
 
-  if (address || userPubKey) {
+  if (
+    (address && selectedSourceChain?.chainType === "evm") ||
+    (userKey && selectedSourceChain?.chainType === "soroban")
+  ) {
     return (
       <Menu
         as="div"
@@ -51,12 +55,12 @@ function WalletButton({ width }) {
             >
               {/* <img src={CoinSVG} className="flex-shrink-0 w-8 h-8" alt="" /> */}
               <CoinSVG />
-              {selectedSourceChain?.id === 1200 && (
+              {selectedSourceChain?.chainType === "soroban" && (
                 <div>
-                  {userPubKey?.slice(0, 5)}...{userPubKey?.slice(-4)}
+                  {userKey?.slice(0, 5)}...{userKey?.slice(-4)}
                 </div>
               )}
-              {selectedSourceChain?.id !== 1200 && (
+              {selectedSourceChain?.chainType === "evm" && (
                 <div>
                   {address?.slice(0, 5)}...{address?.slice(-4)}
                 </div>

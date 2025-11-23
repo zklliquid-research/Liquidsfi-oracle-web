@@ -350,7 +350,7 @@ export const ConnectWallet = async (setUserKey, setNetwork) => {
 export async function anyInvokeMainnet(
   pubKey,
   fee,
-  networkPassphrase,
+  network,
   contractId,
   operation,
   args,
@@ -359,7 +359,7 @@ export async function anyInvokeMainnet(
   const body = {
     pubKey: pubKey,
     fee: fee,
-    networkPassphrase: networkPassphrase,
+    network: network,
     contractId: contractId,
     operation: operation,
     args: args,
@@ -379,7 +379,9 @@ export async function anyInvokeMainnet(
 
     const xdr = response.data.data;
 
-    const signedTx = await signTransaction(xdr, { network: "PUBLIC" });
+    const signedTx = await signTransaction(xdr, {
+      networkPassphrase: Networks[network],
+    });
 
     return signedTx;
   } catch (error) {
@@ -390,10 +392,11 @@ export async function anyInvokeMainnet(
   }
 }
 
-export async function getTrustline(accountId, assetId) {
+export async function getTrustline(accountId, assetId, network) {
   const body = {
     accountId: accountId,
     assetId: assetId,
+    network: network,
   };
 
   try {
@@ -459,13 +462,13 @@ export async function changeTrustline(
   }
 }
 
-export async function sendTransactionMainnet(signedTx, networkPassphrase) {
+export async function sendTransactionMainnet(signedTx, network) {
   try {
     const response = await axios.post(
       `${STELLAR_SDK_SERVER_URL}/sendTransaction`,
       {
         signedTx: signedTx,
-        networkPassphrase: networkPassphrase,
+        network: network,
       }
     );
 

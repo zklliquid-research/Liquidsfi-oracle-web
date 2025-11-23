@@ -2,7 +2,7 @@
 import { ArrowRight } from "iconsax-react";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getATransactionHistory } from "../services";
+import { getTransactionsHistory } from "../services";
 import TransactionHistoryDetails from "../common/TransactionHistoryDetails";
 import { IoMdClose } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
@@ -45,6 +45,25 @@ export default function TransactionHistories({ transactionData }) {
 		else navigate(`/transfers/${transaction.id}`, { replace: true });
 	}
 
+	const [detailsCache, setDetailsCache] = useState({});
+
+	useEffect(() => {
+		if (!transactionData) return;
+
+		async function preloadAll() {
+			const results = {};
+
+			for (const tx of transactionData) {
+				const res = await getTransactionsHistory(tx.id);
+				results[tx.id] = res[0];
+			}
+
+			setDetailsCache(results);
+		}
+
+		preloadAll();
+	}, [transactionData]);
+
 	return (
 		<div>
 			<div className="lg:col-span-9 px-3 md:px-0">
@@ -86,12 +105,11 @@ export default function TransactionHistories({ transactionData }) {
 																	setOpenTransaction(null);
 																	updateUrl(null);
 																} else {
-																	const data = await getATransactionHistory(
-																		transaction.id
-																	);
-																	setTransactionDataDetails(data[0]);
 																	setOpenTransaction(index);
 																	updateUrl(transaction);
+																	setTransactionDataDetails(
+																		detailsCache[transaction.id]
+																	);
 																}
 															}}
 														>

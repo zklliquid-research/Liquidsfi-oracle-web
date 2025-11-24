@@ -6,7 +6,7 @@ import ToFrom from "./ToFrom";
 function History({ transaction }) {
 	return (
 		<div className="flex flex-wrap gap-2 items-center justify-between">
-			<div className="">
+			<div className="w-[200px]">
 				<div className="flex items-center gap-2">
 					<span className="text-[14px]">Msg ID</span>
 					<span className="text-[#2DD4BF] text-[14px]">

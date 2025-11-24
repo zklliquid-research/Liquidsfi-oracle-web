@@ -25,3 +25,13 @@ export const getExplorerStat = async () => {
 
 	return data;
 };
+
+export const getTransactionsHistory = async (query) => {
+	const { data } = await axios.get(
+		`${
+			import.meta.env.VITE_BASE_URL
+		}/get-historical-transactions?tx_id=${query}`
+	);
+
+	return data.data;
+};

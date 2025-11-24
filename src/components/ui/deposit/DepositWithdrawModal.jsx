@@ -39,10 +39,7 @@ const DepositWithdrawModal = ({ isOpenDeposit, onClose, action }) => {
     tokenDes,
     setTokenDes,
     pools,
-    oracleContracts,
-    tokens,
-    chainIds,
-    native,
+
     abi,
     setMessageId,
     awaitTransactionConfirmation,

@@ -26,7 +26,7 @@ import WalletsModal from "./WalletsModal";
 import {
   abi,
   pools,
-  oracleContracts,
+
   tokens,
   chainIds,
   native,

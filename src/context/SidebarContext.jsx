@@ -11,7 +11,6 @@ import { useAccount, useSwitchChain } from "wagmi";
 import {
   abi,
   pools,
-  oracleContracts,
   tokens,
   chainIds,
   native,
@@ -339,7 +338,7 @@ const SidebarContextProvider = ({ children }) => {
         isOpenDeposit,
         setIsOpenDeposit,
         pools,
-        oracleContracts,
+
         tokens,
         chainIds,
         native,

@@ -6,15 +6,18 @@ import { getTransactionsHistory } from "../services";
 import TransactionHistoryDetails from "../common/TransactionHistoryDetails";
 import { IoMdClose } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../common/Loader";
+import Empty from "../common/Empty";
 
 export default function TransactionHistories({ transactionData }) {
 	const navigate = useNavigate();
 	const { id: txIdFromUrl } = useParams();
-	const [transactionDataDetails, setTransactionDataDetails] = useState(null);
+	const [selectedTxId, setSelectedTxId] = useState(null);
 	const [openTransaction, setOpenTransaction] = useState(null);
-	const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
-
-	console.log({ transactionDataDetails });
+	const [isDesktop, setIsDesktop] = useState(
+		typeof window !== "undefined" ? window.innerWidth >= 1024 : false
+	);
 
 	// Handle window size
 	useEffect(() => {
@@ -31,7 +34,11 @@ export default function TransactionHistories({ transactionData }) {
 			(tx) => String(tx.id) === txIdFromUrl
 		);
 
-		setOpenTransaction(index !== -1 ? index : null);
+		if (index !== -1) {
+			setOpenTransaction(index);
+		} else {
+			setOpenTransaction(null);
+		}
 	}, [txIdFromUrl, transactionData]);
 
 	// Prevent background scrolling
@@ -45,24 +52,25 @@ export default function TransactionHistories({ transactionData }) {
 		else navigate(`/transfers/${transaction.id}`, { replace: true });
 	}
 
-	const [detailsCache, setDetailsCache] = useState({});
+	const {
+		data: transactionHistoryData,
+		isLoading: loadingTransactionHistory,
+		isError: errorLoadingTransactionHistory,
+	} = useQuery({
+		queryKey: ["transactionDetails", selectedTxId],
+		queryFn: () => getTransactionsHistory(selectedTxId),
+		enabled: !!selectedTxId, // only fetch when ID exists
+		refetchOnWindowFocus: false,
+		staleTime: 1000 * 60 * 5, // 5 min cache
+	});
 
 	useEffect(() => {
-		if (!transactionData) return;
-
-		async function preloadAll() {
-			const results = {};
-
-			for (const tx of transactionData) {
-				const res = await getTransactionsHistory(tx.id);
-				results[tx.id] = res[0];
-			}
-
-			setDetailsCache(results);
+		if (txIdFromUrl) {
+			setSelectedTxId(txIdFromUrl);
+		} else {
+			setSelectedTxId(null);
 		}
-
-		preloadAll();
-	}, [transactionData]);
+	}, [txIdFromUrl]);
 
 	return (
 		<div>
@@ -72,20 +80,18 @@ export default function TransactionHistories({ transactionData }) {
 						<div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
 							<div className="overflow-hidden ring-1 ring-black ring-opacity-5 md:rounded-xl">
 								<table className="min-w-full  lg:divide-y lg:divide-gray-600">
-									<thead className="hidden 2xl:table-header-group">
+									<thead className="table-header-group border-b border-gray-600">
 										<tr>
 											<th className="py-3.5 px-4 text-left sm:px-6 text-sm whitespace-nowrap font-medium text-gray-200">
-												<div className="flex items-center">
-													Transaction Details
-												</div>
+												Transaction Details
 											</th>
 
 											<th className="py-3.5 px-4 text-left sm:px-6 text-sm whitespace-nowrap font-medium text-gray-200">
-												<div className="flex items-center">TimeStamp</div>
+												TimeStamp
 											</th>
 
 											<th className="py-3.5 px-4 text-left sm:px-6 text-sm whitespace-nowrap font-medium text-gray-200">
-												<div className="flex items-center">Status</div>
+												Status
 											</th>
 										</tr>
 									</thead>
@@ -100,52 +106,62 @@ export default function TransactionHistories({ transactionData }) {
 													<Fragment key={index}>
 														<tr
 															className="cursor-pointer hover:bg-[#202026]"
-															onClick={async () => {
+															onClick={() => {
+																// if (isOpen) {
+																// 	setOpenTransaction(null);
+																// 	updateUrl(null);
+																// } else {
+																// 	setOpenTransaction(index);
+																// 	updateUrl(transaction);
+																// 	setTransactionDataDetails(
+																// 		detailsCache[transaction.id]
+																// 	);
+																// }
 																if (isOpen) {
 																	setOpenTransaction(null);
 																	updateUrl(null);
+																	setSelectedTxId(null);
 																} else {
-																	setOpenTransaction(index);
+																	setOpenTransaction(index); // open instantly
+																	setSelectedTxId(transaction.id); // triggers React Query fetch
 																	updateUrl(transaction);
-																	setTransactionDataDetails(
-																		detailsCache[transaction.id]
-																	);
 																}
 															}}
 														>
 															<td className="px-4 py-4 text-sm font-bold text-gray-200 sm:px-6 whitespace-nowrap">
-																<div className="inline-flex items-center">
+																<div className=" inline-flex items-center flex-wrap gap-4">
 																	<img
 																		className="flex-shrink-0 object-cover w-7 h-7 mr-3 rounded-full"
 																		src={`/cryptoIcons/${transaction.name}.svg`}
 																		alt=""
 																	/>
-																	<div className="flex w-[100px]">{`${transaction.amount} ${transaction.name}: `}</div>
-
-																	<img
-																		className="ml-2 flex-shrink-0 object-cover w-7 h-7 mr-3 rounded-full"
-																		src={`/cryptoIcons/${transaction.from}.svg`}
-																		alt=""
-																	/>
-																	<ArrowRight size="24" color="#37d67a" />
-																	<img
-																		className="ml-2 flex-shrink-0 object-cover w-7 h-7 mr-3 rounded-full"
-																		src={`/cryptoIcons/${transaction.to}.svg`}
-																		alt=""
-																	/>
+																	<div className="flex">{`${transaction.amount} ${transaction.name}: `}</div>
+																	<div className="flex">
+																		<img
+																			className="ml-2 flex-shrink-0 object-cover w-7 h-7 mr-3 rounded-full"
+																			src={`/cryptoIcons/${transaction.from}.svg`}
+																			alt=""
+																		/>
+																		<ArrowRight size="24" color="#37d67a" />
+																		<img
+																			className="ml-2 flex-shrink-0 object-cover w-7 h-7 mr-3 rounded-full"
+																			src={`/cryptoIcons/${transaction.to}.svg`}
+																			alt=""
+																		/>
+																	</div>
 																</div>
-																<div className="space-y-1 2xl:hidden pl-11">
+																{/* <div className="space-y-1 2xl:hidden pl-11">
 																	<p className="text-sm font-medium text-gray-200">
 																		{transaction.time}
 																	</p>
-																</div>
+																</div> */}
 															</td>
 
-															<td className="hidden px-4 py-4 text-sm font-medium text-gray-200 sm:px-6 2xl:table-cell whitespace-nowrap">
+															<td className="px-4 py-4 text-sm font-medium text-gray-200 sm:px-6 2xl:table-cell whitespace-nowrap">
 																{transaction.time}
 															</td>
 
-															<td className="hidden px-4 py-4 text-sm font-medium text-gray-200 sm:px-6 2xl:table-cell whitespace-nowrap">
+															<td className=" px-4 py-4 text-sm font-medium text-gray-200 sm:px-6 2xl:table-cell whitespace-nowrap">
 																<div className="inline-flex items-center">
 																	<svg
 																		className="mr-1.5 h-2.5 w-2.5 text-green-500"
@@ -158,7 +174,7 @@ export default function TransactionHistories({ transactionData }) {
 																</div>
 															</td>
 
-															<td className="px-4 py-4 text-sm font-medium text-right text-gray-200 sm:px-6 whitespace-nowrap 2xl:hidden">
+															{/* <td className="px-4 py-4 text-sm font-medium text-right text-gray-200 sm:px-6 whitespace-nowrap 2xl:hidden">
 																<div className="mt-1 ">
 																	<div className="inline-flex items-center justify-end mt-1">
 																		<svg
@@ -171,7 +187,7 @@ export default function TransactionHistories({ transactionData }) {
 																		Submitted
 																	</div>
 																</div>
-															</td>
+															</td> */}
 														</tr>
 													</Fragment>
 												);
@@ -226,9 +242,15 @@ export default function TransactionHistories({ transactionData }) {
 
 													<hr className="border border-[#09243B] my-6" />
 
-													<TransactionHistoryDetails
-														transaction={transactionDataDetails}
-													/>
+													{loadingTransactionHistory ? (
+														<Loader />
+													) : errorLoadingTransactionHistory ? (
+														<Empty title="Failed to load transaction..." />
+													) : (
+														<TransactionHistoryDetails
+															transaction={transactionHistoryData[0]}
+														/>
+													)}
 												</motion.div>
 											) : (
 												<motion.div
@@ -259,9 +281,15 @@ export default function TransactionHistories({ transactionData }) {
 													</div>
 													<hr className="border border-[#09243B] my-6" />
 
-													<TransactionHistoryDetails
-														transaction={transactionDataDetails}
-													/>
+													{loadingTransactionHistory ? (
+														<Loader />
+													) : errorLoadingTransactionHistory ? (
+														<Empty title="Failed to load transaction..." />
+													) : (
+														<TransactionHistoryDetails
+															transaction={transactionHistoryData[0]}
+														/>
+													)}
 												</motion.div>
 											)}
 										</>

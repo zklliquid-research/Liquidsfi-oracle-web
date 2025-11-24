@@ -4,7 +4,6 @@ import HistoryDetails from "./HistoryDetails";
 import Status from "./Status";
 
 function TransactionHistoryDetails({ transaction }) {
-	console.log({ transaction });
 	return (
 		<div className="text-sm overflow-scroll">
 			<div className="px-5">

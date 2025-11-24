@@ -10,7 +10,7 @@ function Status({ transaction }) {
 				transaction.final_status === "success"
 					? "bg-[#DDF8E6] text-[#1E633A]"
 					: transaction.final_status === "pending"
-					? "bg-[#FFF6EA] text-[#E28204]"
+					? "bg-yellow-500/20 text-yellow-400"
 					: "bg-[#FCE9E9] text-red-400"
 			} `}
 		>

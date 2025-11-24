@@ -73,7 +73,7 @@ function TransactionHistory() {
 	const isVisible = query.length < 50;
 	return (
 		<div className="lg:col-span-4 space-y-4">
-			<div className="flex justify-between relative  items-center gap-4 flex-wrap min-h-[50px]">
+			{/* <div className="flex justify-between relative  items-center gap-4 flex-wrap min-h-[50px]">
 				{isVisible && (
 					<h2
 						className="text-[20px] font-bold shrink-0 opacity-0 translate-y-2 transition-all duration-500 ease-out"
@@ -87,6 +87,29 @@ function TransactionHistory() {
 				)}
 
 				<Search visible={true} query={query} setQuery={setQuery} />
+			</div> */}
+
+			<div className="flex justify-between relative items-center gap-4 flex-wrap min-h-[50px]">
+				{isVisible && (
+					<motion.h2
+						layout
+						className="text-[20px] font-bold shrink-0 transition-all duration-300"
+						animate={{
+							opacity: isVisible ? 1 : 0,
+							y: isVisible ? 0 : 10,
+						}}
+					>
+						Latest Transactions
+					</motion.h2>
+				)}
+
+				<motion.div
+					layout
+					transition={{ duration: 0.35, ease: "easeInOut" }}
+					className="flex-1"
+				>
+					<Search visible={true} query={query} setQuery={setQuery} />
+				</motion.div>
 			</div>
 
 			<div className="border border-[#09243B] p-6 rounded-xl bg-[#04131F]">

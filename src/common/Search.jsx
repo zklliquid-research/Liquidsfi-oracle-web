@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { CiSearch } from "react-icons/ci";
 
 function Search({ query, setQuery }) {

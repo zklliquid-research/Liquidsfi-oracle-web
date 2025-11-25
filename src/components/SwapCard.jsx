@@ -419,7 +419,6 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
   }
 
   async function handleTransferFromXLM() {
-    console.log("the amount is", amount);
     setIsProcessing(true);
     try {
       const args = [
@@ -448,36 +447,38 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
         network?.network
       );
 
-      const msgData = {
-        tx_id:
-          "0x" + res?.resultMetaJson?.v4?.soroban_meta?.return_value?.bytes,
-        origin_tx_hash: res?.txHash,
-        origin_id: chainIds[selectedSourceChain?.id],
-        sender: userKey,
-        origin_contract: pools[selectedSourceChain?.id],
-        destination_id: chainIds[selectedDestinationChain?.id],
-        destination_contract: pools[selectedDestinationChain?.id],
-        tx_data: "000000000000",
-        token_contract: switchToken[selectedSourceChain?.id],
-        token_amount: amount,
-      };
+      if (res) {
+        const msgData = {
+          tx_id:
+            "0x" + res?.resultMetaJson?.v4?.soroban_meta?.return_value?.bytes,
+          origin_tx_hash: res?.txHash,
+          origin_id: chainIds[selectedSourceChain?.id],
+          sender: userKey,
+          origin_contract: pools[selectedSourceChain?.id],
+          destination_id: chainIds[selectedDestinationChain?.id],
+          destination_contract: pools[selectedDestinationChain?.id],
+          tx_data: "000000000000",
+          token_contract: switchToken[selectedSourceChain?.id],
+          token_amount: amount,
+        };
 
-      await handleUpsertTransaction(msgData);
+        await handleUpsertTransaction(msgData);
 
-      const trxData = {
-        amount: amount,
-        tx_data: "000000000000",
-        from: selectedSourceChain?.id,
-        to: selectedDestinationChain?.id,
-        name: switchToken.symbol,
-        id: res?.txHash,
-        time: new Date().toLocaleDateString(),
-      };
+        const trxData = {
+          amount: amount,
+          tx_data: "000000000000",
+          from: selectedSourceChain?.id,
+          to: selectedDestinationChain?.id,
+          name: switchToken.symbol,
+          id: res?.txHash,
+          time: new Date().toLocaleDateString(),
+        };
 
-      saveTransferData(trxData);
+        saveTransferData(trxData);
 
-      setMessageId(res?.txHash);
-      setSuccessModalIsOpen(true);
+        setMessageId(res?.txHash);
+        setSuccessModalIsOpen(true);
+      }
       // console.log("transfer res", res);
     } catch (e) {
       console.log(e);

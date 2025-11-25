@@ -31,7 +31,7 @@ function SwitchNetworkDropdown({ width, allChains }) {
 
   async function handleSwitchChain(id) {
     // console.log("this ran");
-    if (id === 1200) {
+    if (id === 12000000) {
       await handleConnectFreighter();
     } else {
       if (!address) {

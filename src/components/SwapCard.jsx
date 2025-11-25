@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from "react";
+import { ethers } from "ethers";
 import { InfoCircle, Repeat, Setting4, TickCircle } from "iconsax-react";
-import { Soroban, Horizon, Networks } from "@stellar/stellar-sdk";
+import { Soroban, Horizon, Networks, StrKey } from "@stellar/stellar-sdk";
 
 import { v4 as uuid } from "uuid";
 
@@ -88,6 +89,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
   const [totalDebitedAmount, setTotalDebitedAmount] = useState(null);
   const [bridgeFee, setBridgeFee] = useState(null);
+  const [addrIsValid, setAddrIsValid] = useState(true);
 
   const STORAGE_KEY = address;
   const MAX_ITEMS = 5;
@@ -129,6 +131,39 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
     setMessageId,
     setSuccessModalIsOpen,
   } = useContext(SidebarContext);
+
+  function handleAdressIsValid(addr) {
+    if (selectedDestinationChain?.chainType === "evm") {
+      const isValid = ethers.isAddress(addr);
+
+      setAddrIsValid(isValid);
+    } else if (selectedDestinationChain?.chainType === "soroban") {
+      const isValid =
+        StrKey.isValidEd25519PublicKey(addr) || StrKey.isValidContract(addr);
+
+      setAddrIsValid(isValid);
+
+      if (StrKey.isValidContract(addr)) {
+        setHasTrust(true);
+      } else if (StrKey.isValidEd25519PublicKey(addr)) {
+        async function fetchHasTrust() {
+          const accountHasTrust = await getTrustline(
+            addr,
+            switchToken[12000000],
+            "TESTNET"
+          );
+
+          setHasTrust(accountHasTrust);
+        }
+
+        fetchHasTrust();
+      }
+    }
+  }
+
+  useEffect(() => {
+    handleAdressIsValid(recipientAddr);
+  }, [selectedDestinationChain?.name]);
 
   //   useEffect(() => {
   //     async function fetchCashback() {
@@ -174,21 +209,6 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
   //       fetchCashback();
   //     }
   //   }, [userPubKey, selectedSourceChain, updateBalances]);
-
-  useEffect(() => {
-    setHasTrust(false);
-    async function fetchHasTrust() {
-      const accountHasTrust = await getTrustline(
-        recipientAddr,
-        switchToken[12000000],
-        "TESTNET"
-      );
-
-      setHasTrust(accountHasTrust);
-    }
-    if (selectedDestinationChain?.id === 12000000 && recipientAddr)
-      fetchHasTrust();
-  }, [recipientAddr, selectedDestinationChain, recheckTrustline]);
 
   useEffect(() => {
     async function fetchBalance() {
@@ -789,7 +809,10 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
               <div className="relative w-full">
                 <input
-                  onChange={(e) => setRecipientAddr(() => e.target.value)}
+                  onChange={(e) => {
+                    setRecipientAddr(() => e.target.value);
+                    handleAdressIsValid(e.target.value);
+                  }}
                   type="text"
                   name=""
                   id=""
@@ -850,7 +873,18 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
         )}
 
         <div className="mt-6">
-          {!hasTrust && selectedDestinationChain?.id === 12000000 ? (
+          {!addrIsValid ? (
+            <button
+              // className={`${
+              //   disabled
+              //     ? "bg-gray-500 cursor-not-allowed"
+              //     : "bg-gradient-to-r from-[#DC40A4] to-[#6749D5]"
+              // } w-full rounded-lg py-3 ${className}`}
+              className="bg-gray-500 cursor-not-allowed w-full rounded-lg py-3 font-semibold "
+            >
+              Not a Valid {selectedDestinationChain?.name} Address
+            </button>
+          ) : !hasTrust && selectedDestinationChain?.id === 12000000 ? (
             <Button
               disabled={
                 !amount || !selectedDestinationChain || !selectedSourceChain

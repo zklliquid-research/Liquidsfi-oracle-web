@@ -612,39 +612,41 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
       //   const res = await tx.wait();
 
       const res = await awaitTransactionConfirmation(tx);
-      setTrxHash(() => res);
+      if (res) {
+        setTrxHash(() => res);
 
-      const msg_id = res?.logs[1].topics[1];
-      const origin_hash = res?.transactionHash;
+        const msg_id = res?.logs[1].topics[1];
+        const origin_hash = res?.transactionHash;
 
-      const msgData = {
-        tx_id: msg_id,
-        origin_tx_hash: origin_hash,
-        origin_id: chainIds[selectedSourceChain?.id],
-        sender: address,
-        origin_contract: pools[selectedSourceChain?.id],
-        destination_id: chainIds[selectedDestinationChain?.id],
-        destination_contract: pools[selectedDestinationChain?.id],
-        tx_data: "000000000000",
-        token_contract: switchToken[selectedSourceChain?.id],
-        token_amount: amount,
-      };
+        const msgData = {
+          tx_id: msg_id,
+          origin_tx_hash: origin_hash,
+          origin_id: chainIds[selectedSourceChain?.id],
+          sender: address,
+          origin_contract: pools[selectedSourceChain?.id],
+          destination_id: chainIds[selectedDestinationChain?.id],
+          destination_contract: pools[selectedDestinationChain?.id],
+          tx_data: "000000000000",
+          token_contract: switchToken[selectedSourceChain?.id],
+          token_amount: amount,
+        };
 
-      await handleUpsertTransaction(msgData);
+        await handleUpsertTransaction(msgData);
 
-      const trxData = {
-        amount: amount,
-        from: selectedSourceChain?.id,
-        to: selectedDestinationChain?.id,
-        name: switchToken?.symbol,
-        id: res?.transactionHash,
-        time: new Date().toLocaleDateString(),
-      };
+        const trxData = {
+          amount: amount,
+          from: selectedSourceChain?.id,
+          to: selectedDestinationChain?.id,
+          name: switchToken?.symbol,
+          id: res?.transactionHash,
+          time: new Date().toLocaleDateString(),
+        };
 
-      saveTransferData(trxData);
+        saveTransferData(trxData);
 
-      setMessageId(res?.transactionHash);
-      setSuccessModalIsOpen(true);
+        setMessageId(res?.transactionHash);
+        setSuccessModalIsOpen(true);
+      }
     } catch (e) {
       console.log(e);
     } finally {

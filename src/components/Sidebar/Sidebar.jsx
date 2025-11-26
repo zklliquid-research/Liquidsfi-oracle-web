@@ -31,21 +31,21 @@ const sidebarVariants = {
 };
 
 function Sidebar({ currentPageLinks }) {
-  const { isOpen, setIsOpen } = useContext(SidebarContext);
+  const { isOpenSidebar, setIsOpenSidebar } = useContext(SidebarContext);
 
   return (
     <>
       <motion.aside
         initial={false}
-        animate={isOpen ? "open" : "closed"}
+        animate={isOpenSidebar ? "open" : "closed"}
         variants={sidebarVariants}
         className={`bg-[#04131F] w-64 h-app fixed z-30 left-0 top-0 md:!translate-x-0 md:transition-all xl:w-64 ${
-          isOpen ? "md:w-64" : "md:w-20"
+          isOpenSidebar ? "md:w-64" : "md:w-20"
         }`}
       >
         <button
           className="absolute top-0 -right-12 p-3 md:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsOpenSidebar(false)}
         >
           <XMarkIcon className="w-6 h-6 text-white" />
         </button>
@@ -58,14 +58,14 @@ function Sidebar({ currentPageLinks }) {
             <img
               className={clsx(
                 "transition-all h-[28px] w-auto",
-                isOpen ? "ml-0" : "ml-3 xl:ml-0"
+                isOpenSidebar ? "ml-0" : "ml-3 xl:ml-0"
               )}
               src={logo}
               alt=""
             />
             <img
               className={`transition-opacity h-[26px] w-auto ${
-                isOpen ? "md:opacity-100" : "md:opacity-0 xl:opacity-100"
+                isOpenSidebar ? "md:opacity-100" : "md:opacity-0 xl:opacity-100"
               }`}
               src={logoText}
               alt=""
@@ -88,7 +88,7 @@ function Sidebar({ currentPageLinks }) {
                 <div key={index}>
                   <div
                     className={`${
-                      isOpen ? "md:block" : "md:hidden xl:block"
+                      isOpenSidebar ? "md:block" : "md:hidden xl:block"
                     } pl-4 text-[14px] mb-3 font-medium text-white`}
                   >
                     {link.heading}
@@ -113,13 +113,13 @@ function Sidebar({ currentPageLinks }) {
       </motion.aside>
 
       <AnimatePresence>
-        {isOpen && (
+        {isOpenSidebar && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="bg-black/70 fixed inset-0 z-20 md:hidden"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsOpenSidebar(false)}
           />
         )}
       </AnimatePresence>

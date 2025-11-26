@@ -30,6 +30,7 @@ const SidebarContext = createContext();
 
 const SidebarContextProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isXLM, setIsXLM] = useState(false);
   const [userPubKey, setUserPubKey] = useState("");
   const { address } = useAccount();
@@ -353,6 +354,8 @@ const SidebarContextProvider = ({ children }) => {
         walletBalances,
         setWalletBalances,
         depositBalances,
+        isOpenSidebar,
+        setIsOpenSidebar,
       }}
     >
       {children}

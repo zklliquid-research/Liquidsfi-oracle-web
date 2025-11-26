@@ -45,9 +45,14 @@ export default [
         path: "https://explorer.liquids.fi/",
         icon: <PiBinocularsBold className="text-[24px]" />,
       },
+      // {
+      //   title: "Lane Status",
+      //   path: "https://explorer.liquids.fi/lane-status",
+      //   icon: <PiSwap className="text-[24px]" />,
+      // },
       {
-        title: "Lane Status",
-        path: "https://explorer.liquids.fi/lane-status",
+        title: "Supported Chains",
+        path: "https://explorer.liquids.fi/chains",
         icon: <PiSwap className="text-[24px]" />,
       },
     ],

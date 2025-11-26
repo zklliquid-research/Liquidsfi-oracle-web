@@ -22,7 +22,7 @@ export default {
           400: "#141217",
           500: "#0E0C12",
         },
-        primary: "#1F3E85",
+        primary: "#ff844b",
         purple: {
           bg: "#372f47",
           border: "#262130",

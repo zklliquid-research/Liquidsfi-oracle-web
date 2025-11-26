@@ -99,7 +99,7 @@ function Liquidity(props) {
           </>
         ) : (
           <>
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-4  mb-4">
               {[{ label: "Stable Coins" }, { label: "Bonus Reward" }].map(
                 ({ label }, index) => {
                   return (
@@ -107,7 +107,7 @@ function Liquidity(props) {
                       key={index}
                       className={clsx(
                         "text-primary-contrastText p-2 h-[44px] rounded-lg flex-1 font-bold text-sm",
-                        tab === index ? "bg-primary" : "bg-paper"
+                        tab === index ? "bg-[#1F3E85]" : "bg-paper"
                       )}
                       onClick={() => setTab(index)}
                     >

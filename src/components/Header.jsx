@@ -16,8 +16,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import Cashback from "./ui/deposit/Cashback";
 
 function Header() {
-  const { isOpen, setIsOpen, isXLM, setIsXLM, userPubKey, allChains } =
-    useContext(SidebarContext);
+  const {
+    isOpenSidebar,
+    setIsOpenSidebar,
+    isXLM,
+    setIsXLM,
+    userPubKey,
+    allChains,
+  } = useContext(SidebarContext);
   const [isMobilePopupOpen, setIsMobilePopupOpen] = useState(false);
   const { isConnected } = useAccount();
 
@@ -42,11 +48,11 @@ function Header() {
     <div
       className={clsx(
         "fixed top-0 left-0 xl:left-64 right-0 px-4 py-3 transition-all bg-black xl:px-8 xl:py-4 z-20",
-        isOpen ? "md:left-64" : "md:left-20"
+        isOpenSidebar ? "md:left-64" : "md:left-20"
       )}
     >
       <div className="flex justify-between lg:hidden">
-        <button onClick={() => setIsOpen((prev) => !prev)}>
+        <button onClick={() => setIsOpenSidebar((prev) => !prev)}>
           <HambergerMenu size="24" color="#fff" />
         </button>
 
@@ -64,10 +70,10 @@ function Header() {
         <div className="flex gap-4">
           <button
             className={clsx("xl:hidden pr-4 border-r border-dark-300")}
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={() => setIsOpenSidebar((prev) => !prev)}
           >
             <ArrowSquareRight
-              className={isOpen ? "rotate-180" : ""}
+              className={isOpenSidebar ? "rotate-180" : ""}
               size="24"
               color="#4C9BE8"
             />
@@ -116,7 +122,7 @@ function Header() {
               }}
               className={clsx(
                 "fixed top-0 left-0 w-full p-3 z-20 bg-dark-500 py-4 space-y-3",
-                isOpen ? "md:left-64" : "md:left-20"
+                isOpenSidebar ? "md:left-64" : "md:left-20"
               )}
             >
               <WalletButton width="full" />

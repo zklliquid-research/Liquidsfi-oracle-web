@@ -6,6 +6,8 @@ import { useContext } from "react";
 function SidebarLink({ link }) {
   const active = link?.path === window.location?.href;
 
+  console.log("the window ref", window.location?.href);
+
   const { isOpen } = useContext(SidebarContext);
 
   return (

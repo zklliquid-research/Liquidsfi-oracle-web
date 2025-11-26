@@ -12,11 +12,12 @@ function SidebarLink({ link }) {
 
   console.log("the window ref", window.location?.href);
 
-  const { isOpenSidebar } = useContext(SidebarContext);
+  const { isOpenSidebar, setIsOpenSidebar } = useContext(SidebarContext);
 
   return (
     <NavLink
       to={link.path}
+      onClick={() => setIsOpenSidebar(false)}
       className={`flex items-center gap-2 py-3 px-4 hover:text-white transition-colors font-medium ${
         active ? "text-white bg-dark-300" : "text-dark-100"
       }`}

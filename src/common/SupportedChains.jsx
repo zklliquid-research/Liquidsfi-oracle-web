@@ -1,14 +1,11 @@
-/* eslint-disable react/prop-types */
 import { useQuery } from "@tanstack/react-query";
 import { getSupportedChains } from "../services";
-import { Link } from "react-router-dom";
-import { FaArrowRightLong } from "react-icons/fa6";
 import Loader from "./Loader";
 import Empty from "./Empty";
 import { Fragment } from "react";
 import { shortenString } from "../utils";
 
-function SupportedChains({ detailsPage = false }) {
+function SupportedChains() {
 	const {
 		data: supportedChainsData,
 		isLoading: loadingSupportedChains,
@@ -23,13 +20,6 @@ function SupportedChains({ detailsPage = false }) {
 		<div className="lg:col-span-3 space-y-4">
 			<div className="flex justify-between items-center min-h-[50px]">
 				<h2 className="text-[20px] font-bold">Supported Chains</h2>
-				{!detailsPage ? (
-					<>
-						<Link to="/supported-chains">
-							<FaArrowRightLong className="text-[28px] text-white" />
-						</Link>
-					</>
-				) : null}
 			</div>
 
 			<div className="border border-[#09243B] p-6 rounded-xl bg-[#04131F]">

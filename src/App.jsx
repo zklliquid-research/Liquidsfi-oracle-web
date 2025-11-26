@@ -13,37 +13,23 @@ import SupportedChain from "./pages/swap/SupportedChain.jsx";
 import NotFound from "./common/NotFound.jsx";
 
 const isBridge =
-  typeof window !== "undefined" && window.location.host.startsWith("bridge.");
+	typeof window !== "undefined" && window.location.host.startsWith("bridge.");
 const isExplorer =
-  typeof window !== "undefined" && window.location.host.startsWith("explorer.");
+	typeof window !== "undefined" && window.location.host.startsWith("explorer.");
 
 const bridgeRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: <DashboardLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      { index: true, element: <Trade /> },
-      { path: "transfers/:transferId", element: <Trade /> },
-      { path: "liquidity", element: <Liquidity /> },
-      { path: "supported-chains", element: <SupportedChain /> },
-      { path: "faucet", element: <Bridge /> },
-      { path: "*", element: <ErrorPage /> },
-    ],
-  },
-  {
-    path: "/",
-    element: <DashboardLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      { index: true, element: <Trade /> },
-      { path: "transfers/:id", element: <Trade /> },
-      { path: "liquidity", element: <Liquidity /> },
-      // { path: "supported-chains", element: <SupportedChain /> },
-      { path: "faucet", element: <Bridge /> },
-      { path: "*", element: <NotFound /> },
-    ],
-  },
+	{
+		path: "/",
+		element: <DashboardLayout />,
+		errorElement: <ErrorPage />,
+		children: [
+			{ index: true, element: <Trade /> },
+			{ path: "transfers/:transferId", element: <Trade /> },
+			{ path: "liquidity", element: <Liquidity /> },
+			{ path: "faucet", element: <Bridge /> },
+			{ path: "*", element: <ErrorPage /> },
+		],
+	},
 ]);
 
 const explorerRouter = createBrowserRouter([
@@ -61,10 +47,10 @@ const explorerRouter = createBrowserRouter([
 ]);
 
 export default function App() {
-  const router = isBridge ? bridgeRouter : explorerRouter;
-  return (
-    <SidebarContextProvider>
-      <RouterProvider router={router} />
-    </SidebarContextProvider>
-  );
+	const router = isBridge ? bridgeRouter : explorerRouter;
+	return (
+		<SidebarContextProvider>
+			<RouterProvider router={router} />
+		</SidebarContextProvider>
+	);
 }

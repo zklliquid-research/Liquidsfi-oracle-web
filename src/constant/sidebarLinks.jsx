@@ -1,18 +1,4 @@
-import {
-  BitcoinRefresh,
-  Bubble,
-  Home2,
-  PercentageCircle,
-  Repeat,
-  EmptyWalletAdd,
-  Activity,
-  Game,
-  Image,
-  Link2,
-  Data,
-  BuyCrypto,
-  Award,
-} from "iconsax-react";
+import { Bubble, Repeat } from "iconsax-react";
 import { PiBinocularsBold, PiSwap } from "react-icons/pi";
 
 export default [

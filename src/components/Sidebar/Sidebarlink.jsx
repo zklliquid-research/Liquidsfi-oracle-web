@@ -4,19 +4,15 @@ import clsx from "clsx";
 import { useContext, useEffect, useState } from "react";
 
 function SidebarLink({ link }) {
-  // const [active, setActive] = useState(false);
+  const [active, setActive] = useState(false);
+  const { isOpenSidebar, setIsOpenSidebar } = useContext(SidebarContext);
   // const location = useLocation();
 
-  const active =
-    link?.path === `${window?.location?.origin}/${window?.location?.pathname}`;
-
-  // console.log("location is", location);
-  console.log(
-    "the window ref",
-    `${window?.location?.origin}/${window?.location?.pathname}`
-  );
-
-  const { isOpenSidebar, setIsOpenSidebar } = useContext(SidebarContext);
+  useEffect(() => {
+    const active =
+      link?.path === `${window?.location?.origin}${window?.location?.pathname}`;
+    setActive(active);
+  }, [link?.path]);
 
   return (
     <NavLink

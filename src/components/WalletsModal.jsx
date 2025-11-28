@@ -26,6 +26,7 @@ function WalletsModal({ isOpen, onClose }) {
     setUserKey,
     network,
     setNetwork,
+    selectedSourceChain,
   } = useContext(SidebarContext);
 
   useEffect(() => {
@@ -74,9 +75,12 @@ function WalletsModal({ isOpen, onClose }) {
           <button
             // disabled={!connector.ready}
             key={connector.id}
-            onClick={() =>
-              connect({ chainId: avalancheFuji.id || chain.id, connector })
-            }
+            onClick={() => {
+              connect({
+                chainId: selectedSourceChain?.id || avalancheFuji.id,
+                connector,
+              });
+            }}
             className="flex items-center w-full gap-3 px-3 py-2 text-left text-lg rounded-lg bg-dark-300 hover:bg-opacity-60"
           >
             {connector.name === "WalletConnect" ? (

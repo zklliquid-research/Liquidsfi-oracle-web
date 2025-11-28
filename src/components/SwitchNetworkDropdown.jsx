@@ -24,24 +24,27 @@ function SwitchNetworkDropdown({ width, allChains }) {
     selectedChain,
     setSelectedChain,
     handleConnectFreighter,
+    storedChainId,
   } = useContext(SidebarContext);
   const { chain, address, isConnected } = useAccount();
 
   const [isOpen, setIsOpen] = useState(false);
 
   async function handleSwitchChain(id) {
-    // console.log("this ran");
+    const selected = allChains.find(
+      (chain) => chain.id === Number(storedChainId)
+    );
+
+    setSelectedSourceChain(selected);
     if (id === 12000000) {
       await handleConnectFreighter();
     } else {
       if (!address) {
         setIsOpen(true);
       }
-      const response = await switchChain({ chainId: id });
+      const response = switchChain({ chainId: id });
     }
 
-    const selected = allChains.find((chain) => chain.id === id);
-    setSelectedSourceChain(selected);
     localStorage.setItem("selectedChainId", id);
     setSelectedDestinationChain(null);
   }

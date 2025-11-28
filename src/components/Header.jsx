@@ -23,19 +23,13 @@ function Header() {
     setIsXLM,
     userPubKey,
     allChains,
+    userKey,
   } = useContext(SidebarContext);
   const [isMobilePopupOpen, setIsMobilePopupOpen] = useState(false);
   const { isConnected } = useAccount();
 
-  function handleSetXLM(value) {
-    setIsXLM(() => value);
-    const STORAGE_KEY = userPubKey;
-    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-  }
-
   useEffect(() => {
-    const STORAGE_KEY = userPubKey;
+    const STORAGE_KEY = userKey;
     async function fetchSelect() {
       const storedValue = await JSON.parse(localStorage.getItem(STORAGE_KEY));
 

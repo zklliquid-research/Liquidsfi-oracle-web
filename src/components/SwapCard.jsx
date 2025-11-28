@@ -91,7 +91,6 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
   const [bridgeFee, setBridgeFee] = useState(null);
   const [addrIsValid, setAddrIsValid] = useState(true);
 
-  const STORAGE_KEY = address;
   const MAX_ITEMS = 5;
 
   const isMobile = useMediaQuery("(max-width: 375px)");
@@ -108,7 +107,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
   const {
     selectedSourceChain,
-    setSelectedSourceChain,
+
     selectedDestinationChain,
     setSelectedDestinationChain,
     isXLM,
@@ -486,7 +485,6 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
 
         const trxData = {
           amount: amount,
-          tx_data: "000000000000",
           from: selectedSourceChain?.id,
           to: selectedDestinationChain?.id,
           name: switchToken.symbol,
@@ -494,7 +492,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
           time: new Date().toLocaleDateString(),
         };
 
-        saveTransferData(trxData);
+        saveTransferData(userKey, trxData);
 
         setMessageId(res?.txHash);
         setSuccessModalIsOpen(true);
@@ -662,7 +660,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
           time: new Date().toLocaleDateString(),
         };
 
-        saveTransferData(trxData);
+        saveTransferData(address, trxData);
 
         setMessageId(res?.transactionHash);
         setSuccessModalIsOpen(true);
@@ -674,7 +672,7 @@ function SwapCard({ setUserKeyXLM, setNetworkXLM, userKeyXLM }) {
     }
   }
 
-  function saveTransferData(newData) {
+  function saveTransferData(STORAGE_KEY, newData) {
     let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
     if (data.length >= MAX_ITEMS) {

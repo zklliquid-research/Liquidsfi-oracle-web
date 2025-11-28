@@ -17,18 +17,19 @@ function WalletButton({ width }) {
   const {
     isOpen,
     setIsOpen,
-    isXLM,
-    userPubKey,
-    setUserPubKey,
+
     selectedSourceChain,
-    setSelectedSouceChain,
-    selectedNetwork,
-    setSelectedNetwork,
+
     userKey,
   } = useContext(SidebarContext);
 
   const copyAddress = () => {
-    navigator.clipboard.writeText(address);
+    if (selectedSourceChain?.chainType === "evm") {
+      navigator.clipboard.writeText(address);
+    } else if (selectedSourceChain?.chainType === "soroban") {
+      navigator.clipboard.writeText(userKey);
+    }
+
     toast.success("Copied to clipboard.");
   };
 

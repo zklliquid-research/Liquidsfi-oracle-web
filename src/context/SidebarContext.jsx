@@ -74,9 +74,7 @@ const SidebarContextProvider = ({ children }) => {
     localStorage.getItem("selectedChainId") || 12000000
   );
 
-  const initialChain = allChains?.find((chain) => chain?.id === storedChainId);
-
-  const [selectedSourceChain, setSelectedSourceChain] = useState(initialChain);
+  const [selectedSourceChain, setSelectedSourceChain] = useState(null);
 
   const tokenOptions = Object.entries(tokens).map(([symbol, data]) => ({
     id: uuid(),
@@ -279,8 +277,6 @@ const SidebarContextProvider = ({ children }) => {
   ]);
 
   useEffect(() => {
-    const storedChainId = localStorage.getItem("selectedChainId");
-
     if (storedChainId) {
       const selectedChain = allChains?.find(
         (chain) => chain?.id === Number(storedChainId)
@@ -288,7 +284,7 @@ const SidebarContextProvider = ({ children }) => {
 
       setSelectedSourceChain(selectedChain);
     }
-  }, []);
+  }, [storedChainId]);
 
   async function handleConnectFreighter() {
     setFreighterConnecting(true);
@@ -364,6 +360,7 @@ const SidebarContextProvider = ({ children }) => {
         setIsOpenSidebar,
         walletIsConnected,
         needConnectWallet,
+        storedChainId,
       }}
     >
       {children}
